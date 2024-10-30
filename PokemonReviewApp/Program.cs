@@ -1,3 +1,4 @@
+using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 using  Microsoft.EntityFrameworkCore.Design;
 using PokemonReviewApp;
@@ -17,6 +18,7 @@ builder.Services.AddSwaggerGen();
 // Adding database connection via data context
 builder.Services.AddDbContext<DataContext>(options =>
 {
+
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
