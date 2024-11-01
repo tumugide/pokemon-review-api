@@ -18,13 +18,12 @@ builder.Services.AddSwaggerGen();
 // Adding database connection via data context
 builder.Services.AddDbContext<DataContext>(options =>
 {
-
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 var app = builder.Build();
 
-// Adding seeding service on app start
+// Adding seeding service on app start using the 'seeddata' keyword
 if (args.Length == 1 && args[0].ToLower() == "seeddata")
     SeedData(app);
 
