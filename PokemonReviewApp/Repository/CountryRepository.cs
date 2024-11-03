@@ -21,8 +21,8 @@ public class CountryRepository :ICountryInterface
 
     public Country GetCountry(int id)
     {
-        // return _context.Countries.Find(id);
-       return _context.Countries.Where(c => c.Id == id).FirstOrDefault();
+        return _context.Countries.Find(id);
+       // return _context.Countries.Where(c => c.Id == id).FirstOrDefault();
     }
 
     public bool CountryExists(int id)

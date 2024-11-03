@@ -38,7 +38,7 @@ public class CountryController :ControllerBase
     [ProducesResponseType(404)]
     public IActionResult GetCountry(int id)
     {
-        if (_countryInterface.CountryExists(id))
+        if (!_countryInterface.CountryExists(id))
             return NotFound();
         
         var country = _countryInterface.GetCountry(id);

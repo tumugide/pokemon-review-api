@@ -21,8 +21,8 @@ public class PokemonRepository : IPokemonInterface
     // Getting a single pokemon based on the id
     public Pokemon GetPokemon(int id)
     {
-        return _context.Pokemons.Where(p => p.Id == id).FirstOrDefault();
-        // return _context.Pokemons.Find(id);
+        // return _context.Pokemons.Where(p => p.Id == id).FirstOrDefault();
+        return _context.Pokemons.Find(id);
     }
 
     // Getting a single pokemon based on the name

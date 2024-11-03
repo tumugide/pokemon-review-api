@@ -19,8 +19,8 @@ public class CategoryRepository :ICategoryInterface
 
     public Category GetCategory(int id)
     {
-       return _context.Categories.Where(c => c.Id == id).FirstOrDefault();
-       // return _context.Categories.Find(id);
+       // return _context.Categories.Where(c => c.Id == id).FirstOrDefault();
+       return _context.Categories.Find(id);
     }
 
     public Category GetCategory(string name)
