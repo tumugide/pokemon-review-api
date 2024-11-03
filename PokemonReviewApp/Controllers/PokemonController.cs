@@ -1,30 +1,28 @@
 using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Data;
+using PokemonReviewApp.Interfaces;
+using PokemonReviewApp.Model;
 
 namespace PokemonReviewApp.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PokemonController : ControllerBase
+public class PokemonController : Controller
 {
-    private readonly DataContext _context;
-
-    public PokemonController(DataContext context)
+    private readonly IPokemonInterface _pokemonInterface;
+    public PokemonController(IPokemonInterface pokemonInterface)
     {
-        _context = context;
+        this._pokemonInterface = pokemonInterface;
     }
 
-    [HttpGet("test")]
-    public IActionResult TestConnection()
+    [HttpGet]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<Pokemon>))]
+    public IActionResult GetPokemons()
     {
-        try
-        {
-            var canConnect = _context.Database.CanConnect();
-            return Ok($"Database connection: {canConnect}");
-        }
-        catch (Exception ex)
-        {
-            return BadRequest($"Error: {ex.Message}");
-        }
+        var pokemons = this._pokemonInterface.GetPokemons();
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        return Ok(pokemons);
     }
+    
 }
