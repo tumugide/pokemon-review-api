@@ -13,6 +13,6 @@ public class MappingProfiles :Profile
         CreateMap<Country, CountryDto>();
         CreateMap<Owner, OwnerDto>();
         CreateMap<Review, ReviewDto>();
-        CreateMap<Reviewer, ReviewDto>();
+        CreateMap<Reviewer, ReviewerDto>();
     }
 }

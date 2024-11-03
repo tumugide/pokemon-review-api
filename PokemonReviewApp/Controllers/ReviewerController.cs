@@ -28,11 +28,12 @@ public class ReviewerController :ControllerBase
         
         if(!ModelState.IsValid)
             return BadRequest(ModelState);
+        
         return Ok(mappedReviewers);
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(200, Type = typeof(Reviewer))]
+    [ProducesResponseType(200, Type = typeof(ReviewerDto))]
     [ProducesResponseType(404)]
     public IActionResult GetReviewer(int id)
     {
@@ -48,7 +49,7 @@ public class ReviewerController :ControllerBase
     }
 
     [HttpGet("/reviews/{reviewerId}")]
-    [ProducesResponseType(200, Type = typeof(List<Review>))]
+    [ProducesResponseType(200, Type = typeof(List<ReviewDto>))]
     [ProducesResponseType(404)]
     public IActionResult GetReviewsByReviewer(int reviewerId)
     {
