@@ -18,6 +18,7 @@ builder.Services.AddScoped<ICategoryInterface, CategoryRepository>();
 builder.Services.AddScoped<ICountryInterface, CountryRepository>();
 builder.Services.AddScoped<IOwnerInterface, OwnerRepository>();
 builder.Services.AddScoped<IReviewInterface, ReviewRepository>();
+builder.Services.AddScoped<IReviewerInterface, ReviewerRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
