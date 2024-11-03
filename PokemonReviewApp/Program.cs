@@ -17,6 +17,7 @@ builder.Services.AddScoped<IPokemonInterface, PokemonRepository>();
 builder.Services.AddScoped<ICategoryInterface, CategoryRepository>();
 builder.Services.AddScoped<ICountryInterface, CountryRepository>();
 builder.Services.AddScoped<IOwnerInterface, OwnerRepository>();
+builder.Services.AddScoped<IReviewInterface, ReviewRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
