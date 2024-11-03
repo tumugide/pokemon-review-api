@@ -29,4 +29,14 @@ public class CountryRepository :ICountryInterface
     {
        return _context.Countries.Any(c => c.Id == id);
     }
+
+    public Country GetCountryByOwner(int OwnerId)
+    {
+        return _context.Owners.Where(o =>o.Id == OwnerId).Select(c => c.Country).FirstOrDefault();
+    }
+
+    public ICollection<Owner> GetOwnersByCountry(int CountryId)
+    {
+        return _context.Owners.Where(c => c.Country.Id == CountryId).ToList();
+    }
 }

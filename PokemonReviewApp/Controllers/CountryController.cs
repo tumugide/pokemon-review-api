@@ -49,4 +49,34 @@ public class CountryController :ControllerBase
         
         return Ok(mappedCountry);
     }
+
+    [HttpGet("country/{ownerId}")]
+    [ProducesResponseType(200, Type = typeof(Country))]
+    [ProducesResponseType(404)]
+    public IActionResult GetCountryByOwner(int ownerId)
+    {
+        var country = _countryInterface.GetCountryByOwner(ownerId);
+        var mappedCountry = _mapper.Map<CountryDto>(country);
+        
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+        return Ok(mappedCountry);
+    }
+
+    [HttpGet("owners/{countryId}")]
+    [ProducesResponseType(200, Type = typeof(List<Owner>))]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    public IActionResult GetOwnersByCountry(int countryId)
+    {
+        if (!_countryInterface.CountryExists(countryId))
+            return NotFound();
+        
+        var owners = _countryInterface.GetOwnersByCountry(countryId);
+        var mappedOwners = _mapper.Map<List<OwnerDto>>(owners);
+        
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+        return Ok(mappedOwners);
+    }
 }

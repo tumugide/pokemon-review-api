@@ -7,4 +7,6 @@ public interface ICountryInterface
     ICollection<Country> GetCountries();
     Country GetCountry(int id);
     bool CountryExists(int id);
+    Country GetCountryByOwner(int OwnerId);
+    ICollection<Owner> GetOwnersByCountry(int CountryId);
 }
