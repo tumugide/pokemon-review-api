@@ -39,4 +39,17 @@ public class CountryRepository :ICountryInterface
     {
         return _context.Owners.Where(c => c.Country.Id == CountryId).ToList();
     }
+
+    public bool CreateCountry(Country country)
+    {
+        _context.Add(country);
+        return Save();
+    }
+
+    public bool Save()
+    {
+        var save = _context.SaveChanges();
+        
+        return save > 0 ? true : false;
+    }
 }

@@ -9,7 +9,7 @@ namespace PokemonReviewApp.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PokemonController : Controller
+public class PokemonController : ControllerBase
 {
     private readonly IPokemonInterface _pokemonInterface;
     private readonly IMapper _mapper;
@@ -20,18 +20,19 @@ public class PokemonController : Controller
     }
 
     [HttpGet]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<Pokemon>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<PokemonDto>))]
     public IActionResult GetPokemons()
     {
-        var pokemons = _pokemonInterface.GetPokemons();
-        var mappedPokemons = _mapper.Map<List<PokemonDto>>(pokemons);
+        var pokemons = _mapper.Map<List<PokemonDto>>(_pokemonInterface.GetPokemons());
+        
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
-        return Ok(mappedPokemons);
+        
+        return Ok(pokemons);
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(200, Type = typeof(Pokemon))]
+    [ProducesResponseType(200, Type = typeof(PokemonDto))]
     [ProducesResponseType(400)]
     public IActionResult GetPokemon(int id)
     {

@@ -15,7 +15,7 @@ public class PokemonRepository : IPokemonInterface
     // getting all the pokemons and ordering them by id
     public ICollection<Pokemon> GetPokemons()
     {
-        return _context.Pokemons.OrderBy(p => p.Id).ToList();
+        return _context.Pokemons.ToList();
     }
 
     // Getting a single pokemon based on the id

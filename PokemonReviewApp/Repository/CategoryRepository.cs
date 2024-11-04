@@ -37,4 +37,17 @@ public class CategoryRepository :ICategoryInterface
     {
        return _context.Categories.Any(c => c.Id == categoryId);
     }
+
+    public bool CreateCategory(Category category)
+    {
+        _context.Add(category);
+
+       return Save();
+    }
+
+    public bool Save()
+    {
+        var save = _context.SaveChanges();
+        return save > 0 ? true : false;
+    }
 }
