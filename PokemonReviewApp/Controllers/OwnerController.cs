@@ -75,7 +75,7 @@ public class OwnerController(IOwnerRepository ownerRepository, IMapper mapper, I
     [ProducesResponseType(201)]
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
-    public IActionResult CreateOwner([FromBody] OwnerDto ownerDto)
+    public IActionResult CreateOwner([FromQuery] int countryId, [FromBody] OwnerDto ownerDto)
     {
         // Start of Validations
         if (ownerDto == null)
@@ -94,11 +94,11 @@ public class OwnerController(IOwnerRepository ownerRepository, IMapper mapper, I
             return BadRequest(ModelState);
         // End of validations
 
-        var ownerEntity = mapper.Map<Owner>(ownerDto);
+        var ownerMap = mapper.Map<Owner>(ownerDto);
         // Adding the country relation
-        ownerEntity.Country = countryRepository.GetCountry(ownerDto.CountryId);
+        ownerMap.Country = countryRepository.GetCountry(countryId);
         
-        var newOwner = ownerRepository.CreateOwner(ownerEntity);
+        var newOwner = ownerRepository.CreateOwner(ownerMap);
         
         if (!newOwner)
         {

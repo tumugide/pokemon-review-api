@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Dto;
+using PokemonReviewApp.Dto.CreateDto;
 using PokemonReviewApp.Interfaces;
 using PokemonReviewApp.Model;
 
@@ -54,5 +55,42 @@ public class ReviewerController(IReviewerRepository reviewerRepository, IMapper 
             return BadRequest(ModelState);
         
         return Ok(mappedReviews);
+    }
+    
+    [HttpPost]
+    [ProducesResponseType(201)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public IActionResult CreateOwner([FromBody] AddReviewerDto reviewerDto)
+    {
+        // Start of Validations
+        if (reviewerDto == null)
+            return BadRequest(ModelState);
+
+        var existingReviewer = reviewerRepository
+            .GetReviewers().FirstOrDefault(o=> o.LastName.Trim().ToUpper() == reviewerDto.LastName.TrimEnd().ToUpper());
+
+        if (existingReviewer != null)
+        {
+            ModelState.AddModelError("", "Reviewer with such names already exists");
+            return StatusCode(422, ModelState);
+        }
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        // End of validations
+
+        var reviewerMap = mapper.Map<Reviewer>(reviewerDto);
+        
+        var newReviewer = reviewerRepository.CreateReviewer(reviewerMap);
+        
+        if (!newReviewer)
+        {
+            ModelState.AddModelError("","Error occured while creating the reviewer");
+            return StatusCode(500, ModelState);
+        }
+        
+        return Ok("Reviewer created");
+
     }
 }

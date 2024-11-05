@@ -1,5 +1,6 @@
 using AutoMapper;
 using PokemonReviewApp.Dto;
+using PokemonReviewApp.Dto.CreateDto;
 using PokemonReviewApp.Model;
 
 namespace PokemonReviewApp.Helper;
@@ -9,7 +10,7 @@ public class MappingProfiles :Profile
     public MappingProfiles()
     {
         CreateMap<Pokemon, PokemonDto>();
-        CreateMap<PokemonDto, Pokemon>();
+        CreateMap<AddPokemonDto, Pokemon>();
         
         CreateMap<Category, CategoryDto>();
         CreateMap<CategoryDto, Category>();
@@ -21,9 +22,9 @@ public class MappingProfiles :Profile
         CreateMap<OwnerDto, Owner>();
         
         CreateMap<Review, ReviewDto>();
-        CreateMap<ReviewDto, Review>();
+        CreateMap<AddReviewDto, Review>();
         
         CreateMap<Reviewer, ReviewerDto>();
-        CreateMap<ReviewerDto, Reviewer>();
+        CreateMap<AddReviewerDto, Reviewer>();
     }
 }

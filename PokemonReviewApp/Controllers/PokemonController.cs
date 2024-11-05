@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Data;
 using PokemonReviewApp.Dto;
+using PokemonReviewApp.Dto.CreateDto;
 using PokemonReviewApp.Interfaces;
 using PokemonReviewApp.Model;
 
@@ -58,6 +59,42 @@ public class PokemonController : ControllerBase
         if(!ModelState.IsValid)
             return BadRequest(ModelState);
         return Ok(rating);
+    }
+    
+    [HttpPost]
+    [ProducesResponseType(201)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public IActionResult CreatePokemon([FromBody] AddPokemonDto pokemonDto)
+    {
+        // Start of Validations
+        if (pokemonDto == null)
+            return BadRequest(ModelState);
+
+        var existingPokemon = _pokemonRepository
+            .GetPokemons().FirstOrDefault(o=> o.Name.Trim().ToUpper() == pokemonDto.Name.TrimEnd().ToUpper());
+
+        if (existingPokemon != null)
+        {
+            ModelState.AddModelError("", "Pokemon with such name already exists");
+            return StatusCode(422, ModelState);
+        }
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        // End of validations
+
+        var pokemonMap = _mapper.Map<Pokemon>(pokemonDto);
+        // Adding the country relation
+        
+        var newPokemon = _pokemonRepository.CreatePokemon(pokemonDto.OwnerId, pokemonDto.CategoryId, pokemonMap);
+        
+        if (newPokemon)
+            return Ok("Pokemon created");
+        
+        ModelState.AddModelError("","Error occured while creating the pokemon");
+        return StatusCode(500, ModelState);
+
     }
     
 }
