@@ -9,14 +9,14 @@ namespace PokemonReviewApp.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class OwnerController(IOwnerInterface ownerInterface, IMapper mapper, ICountryInterface countryInterface) : ControllerBase
+public class OwnerController(IOwnerRepository ownerRepository, IMapper mapper, ICountryRepository countryRepository) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(200, Type = typeof(List<OwnerDto>))]
     [ProducesResponseType(400)]
     public IActionResult GetOwners()
     {
-        var owners = ownerInterface.GetOwners();
+        var owners = ownerRepository.GetOwners();
         var mappedOwners = mapper.Map<List<OwnerDto>>(owners);
 
         if (!ModelState.IsValid)
@@ -31,9 +31,9 @@ public class OwnerController(IOwnerInterface ownerInterface, IMapper mapper, ICo
     [ProducesResponseType(400)]
     public IActionResult GetOwner(int id)
     {
-        if (!ownerInterface.OwnerExists(id))
+        if (!ownerRepository.OwnerExists(id))
             return NotFound();
-        var owner = ownerInterface.GetOwner(id);
+        var owner = ownerRepository.GetOwner(id);
         var mappedOwner = mapper.Map<OwnerDto>(owner);
 
         if (!ModelState.IsValid)
@@ -47,7 +47,7 @@ public class OwnerController(IOwnerInterface ownerInterface, IMapper mapper, ICo
     [ProducesResponseType(404)]
     public IActionResult GetOwnersByPokemon(int pokemonId)
     {
-        var owners = ownerInterface.GetOwnerOfPokemon(pokemonId);
+        var owners = ownerRepository.GetOwnerOfPokemon(pokemonId);
         var mappedOwners = mapper.Map<List<OwnerDto>>(owners);
 
         if (!ModelState.IsValid)
@@ -61,9 +61,9 @@ public class OwnerController(IOwnerInterface ownerInterface, IMapper mapper, ICo
     [ProducesResponseType(404)]
     public IActionResult GetPokemonsByOwner(int ownerId)
     {
-        if (!ownerInterface.OwnerExists(ownerId))
+        if (!ownerRepository.OwnerExists(ownerId))
             return NotFound();
-        var pokemon = ownerInterface.GetPokemonByOwner(ownerId);
+        var pokemon = ownerRepository.GetPokemonByOwner(ownerId);
         var mappedPokemon = mapper.Map<List<PokemonDto>>(pokemon);
 
         if (!ModelState.IsValid)
@@ -81,7 +81,7 @@ public class OwnerController(IOwnerInterface ownerInterface, IMapper mapper, ICo
         if (ownerDto == null)
             return BadRequest(ModelState);
 
-        var existingOwner = ownerInterface
+        var existingOwner = ownerRepository
             .GetOwners().FirstOrDefault(o=> o.LastName.Trim().ToUpper() == ownerDto.LastName.TrimEnd().ToUpper());
 
         if (existingOwner != null)
@@ -96,9 +96,9 @@ public class OwnerController(IOwnerInterface ownerInterface, IMapper mapper, ICo
 
         var ownerEntity = mapper.Map<Owner>(ownerDto);
         // Adding the country relation
-        ownerEntity.Country = countryInterface.GetCountry(ownerDto.CountryId);
+        ownerEntity.Country = countryRepository.GetCountry(ownerDto.CountryId);
         
-        var newOwner = ownerInterface.CreateOwner(ownerEntity);
+        var newOwner = ownerRepository.CreateOwner(ownerEntity);
         
         if (!newOwner)
         {

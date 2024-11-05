@@ -2,7 +2,7 @@ using PokemonReviewApp.Model;
 
 namespace PokemonReviewApp.Interfaces;
 
-public interface ICategoryInterface
+public interface ICategoryRepository
 {
     ICollection<Category> GetCategories();
     Category GetCategory(int id);

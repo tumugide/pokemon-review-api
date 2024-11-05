@@ -10,12 +10,12 @@ namespace PokemonReviewApp.Controllers;
 [ApiController]
 public class ReviewController :ControllerBase
 {
-    private readonly IReviewInterface _reviewInterface;
+    private readonly IReviewRepository _reviewRepository;
     private readonly IMapper _mapper;
 
-    public ReviewController(IReviewInterface reviewInterface, IMapper mapper)
+    public ReviewController(IReviewRepository reviewRepository, IMapper mapper)
     {
-        _reviewInterface = reviewInterface;
+        _reviewRepository = reviewRepository;
         _mapper = mapper;
     }
 
@@ -24,7 +24,7 @@ public class ReviewController :ControllerBase
     [ProducesResponseType(400)]
     public IActionResult GetReviews()
     {
-        var reviews = _reviewInterface.GetReviews();
+        var reviews = _reviewRepository.GetReviews();
         var mappedReviews = _mapper.Map<List<ReviewDto>>(reviews);
         
         if(!ModelState.IsValid)
@@ -39,9 +39,9 @@ public class ReviewController :ControllerBase
     [ProducesResponseType(404)]
     public IActionResult GetReview(int id)
     {
-        if(!_reviewInterface.ReviewExists(id))
+        if(!_reviewRepository.ReviewExists(id))
             return NotFound();
-        var review = _reviewInterface.GetReview(id);
+        var review = _reviewRepository.GetReview(id);
         var mappedReview = _mapper.Map<ReviewDto>(review);
         
         if(!ModelState.IsValid)
@@ -56,7 +56,7 @@ public class ReviewController :ControllerBase
     [ProducesResponseType(404)]
     public IActionResult GetReviewsByPokemon(int pokemonId)
     {
-        var reviews = _reviewInterface.GetReviewsOfAPokemon(pokemonId);
+        var reviews = _reviewRepository.GetReviewsOfAPokemon(pokemonId);
         var mappedReviews = _mapper.Map<List<ReviewDto>>(reviews);
         
         if(!ModelState.IsValid)

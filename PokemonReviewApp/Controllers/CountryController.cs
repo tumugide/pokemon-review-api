@@ -9,14 +9,14 @@ namespace PokemonReviewApp.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CountryController(ICountryInterface countryInterface, IMapper mapper) : ControllerBase
+public class CountryController(ICountryRepository countryRepository, IMapper mapper) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(200, Type = typeof(List<CountryDto>))]
     [ProducesResponseType(400)]
     public IActionResult GetCountries()
     {
-        var countries = mapper.Map<List<CountryDto>>(countryInterface.GetCountries());
+        var countries = mapper.Map<List<CountryDto>>(countryRepository.GetCountries());
         
         if(!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -29,10 +29,10 @@ public class CountryController(ICountryInterface countryInterface, IMapper mappe
     [ProducesResponseType(404)]
     public IActionResult GetCountry(int id)
     {
-        if (!countryInterface.CountryExists(id))
+        if (!countryRepository.CountryExists(id))
             return NotFound();
         
-        var country = countryInterface.GetCountry(id);
+        var country = countryRepository.GetCountry(id);
         var mappedCountry = mapper.Map<CountryDto>(country);
         
         if(!ModelState.IsValid)
@@ -46,7 +46,7 @@ public class CountryController(ICountryInterface countryInterface, IMapper mappe
     [ProducesResponseType(404)]
     public IActionResult GetCountryByOwner(int ownerId)
     {
-        var country = countryInterface.GetCountryByOwner(ownerId);
+        var country = countryRepository.GetCountryByOwner(ownerId);
         var mappedCountry = mapper.Map<CountryDto>(country);
         
         if(!ModelState.IsValid)
@@ -60,10 +60,10 @@ public class CountryController(ICountryInterface countryInterface, IMapper mappe
     [ProducesResponseType(404)]
     public IActionResult GetOwnersByCountry(int countryId)
     {
-        if (!countryInterface.CountryExists(countryId))
+        if (!countryRepository.CountryExists(countryId))
             return NotFound();
         
-        var owners = countryInterface.GetOwnersByCountry(countryId);
+        var owners = countryRepository.GetOwnersByCountry(countryId);
         var mappedOwners = mapper.Map<List<OwnerDto>>(owners);
         
         if(!ModelState.IsValid)
@@ -80,7 +80,7 @@ public class CountryController(ICountryInterface countryInterface, IMapper mappe
         if (countryDto == null)
             return BadRequest(ModelState);
 
-        var country = countryInterface.GetCountries().Where(c => c.Name == countryDto.Name).FirstOrDefault();
+        var country = countryRepository.GetCountries().Where(c => c.Name == countryDto.Name).FirstOrDefault();
         if (country !=null)
         {
             ModelState.AddModelError("","Country already exist");
@@ -91,7 +91,7 @@ public class CountryController(ICountryInterface countryInterface, IMapper mappe
             return BadRequest(ModelState);
         
         var countryEntity = mapper.Map<Country>(countryDto);
-        if (!countryInterface.CreateCountry(countryEntity))
+        if (!countryRepository.CreateCountry(countryEntity))
         {
            ModelState.AddModelError("","Error occured while creating the country");
            return StatusCode(500, ModelState);

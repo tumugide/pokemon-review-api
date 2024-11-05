@@ -11,11 +11,11 @@ namespace PokemonReviewApp.Controllers;
 [ApiController]
 public class PokemonController : ControllerBase
 {
-    private readonly IPokemonInterface _pokemonInterface;
+    private readonly IPokemonRepository _pokemonRepository;
     private readonly IMapper _mapper;
-    public PokemonController(IPokemonInterface pokemonInterface, IMapper mapper)
+    public PokemonController(IPokemonRepository pokemonRepository, IMapper mapper)
     {
-        _pokemonInterface = pokemonInterface;
+        _pokemonRepository = pokemonRepository;
         _mapper = mapper;
     }
 
@@ -23,7 +23,7 @@ public class PokemonController : ControllerBase
     [ProducesResponseType(200, Type = typeof(IEnumerable<PokemonDto>))]
     public IActionResult GetPokemons()
     {
-        var pokemons = _mapper.Map<List<PokemonDto>>(_pokemonInterface.GetPokemons());
+        var pokemons = _mapper.Map<List<PokemonDto>>(_pokemonRepository.GetPokemons());
         
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -36,9 +36,9 @@ public class PokemonController : ControllerBase
     [ProducesResponseType(400)]
     public IActionResult GetPokemon(int id)
     {
-        if (!_pokemonInterface.PokemonExists(id))
+        if (!_pokemonRepository.PokemonExists(id))
             return NotFound();
-        var pokemon = _pokemonInterface.GetPokemon(id);
+        var pokemon = _pokemonRepository.GetPokemon(id);
         var mappedPoke = _mapper.Map<PokemonDto>(pokemon);
 
         if (!ModelState.IsValid)
@@ -51,10 +51,10 @@ public class PokemonController : ControllerBase
     [ProducesResponseType(400)]
     public IActionResult GetPokemonRating(int pokemonId)
     {
-        if (!_pokemonInterface.PokemonExists(pokemonId))
+        if (!_pokemonRepository.PokemonExists(pokemonId))
             return NotFound();
 
-        var rating = _pokemonInterface.GetPokemonRating(pokemonId);
+        var rating = _pokemonRepository.GetPokemonRating(pokemonId);
         if(!ModelState.IsValid)
             return BadRequest(ModelState);
         return Ok(rating);

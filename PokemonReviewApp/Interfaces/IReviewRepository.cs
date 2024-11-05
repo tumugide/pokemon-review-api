@@ -2,7 +2,7 @@ using PokemonReviewApp.Model;
 
 namespace PokemonReviewApp.Interfaces;
 
-public interface IReviewInterface
+public interface IReviewRepository
 {
     ICollection<Review> GetReviews();
     Review GetReview(int id);

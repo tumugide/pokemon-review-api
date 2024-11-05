@@ -2,7 +2,7 @@ using PokemonReviewApp.Model;
 
 namespace PokemonReviewApp.Interfaces;
 
-public interface IOwnerInterface
+public interface IOwnerRepository
 {
     ICollection<Owner> GetOwners();
     Owner GetOwner(int id);

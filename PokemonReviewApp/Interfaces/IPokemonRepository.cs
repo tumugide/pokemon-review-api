@@ -2,7 +2,7 @@ using PokemonReviewApp.Model;
 
 namespace PokemonReviewApp.Interfaces;
 
-public interface IPokemonInterface
+public interface IPokemonRepository
 {
     ICollection<Pokemon> GetPokemons(); // Getting all pokemons
     

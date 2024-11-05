@@ -10,13 +10,13 @@ namespace PokemonReviewApp.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CategoryController(ICategoryInterface categoryInterface, IMapper mapper) : ControllerBase
+public class CategoryController(ICategoryRepository categoryRepository, IMapper mapper) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(200, Type = typeof(IEnumerable<Category>))]
     public IActionResult getCategories()
     {
-        var categories = categoryInterface.GetCategories();
+        var categories = categoryRepository.GetCategories();
         var mappedCategories = mapper.Map<List<CategoryDto>>(categories);
         
         if(!ModelState.IsValid)
@@ -30,10 +30,10 @@ public class CategoryController(ICategoryInterface categoryInterface, IMapper ma
     [ProducesResponseType(404)]
     public IActionResult GetCategory(int id)
     {
-        if (!categoryInterface.CategoryExists(id))
+        if (!categoryRepository.CategoryExists(id))
             return NotFound();
         
-        var category = categoryInterface.GetCategory(id);
+        var category = categoryRepository.GetCategory(id);
         var mappedCategory = mapper.Map<CategoryDto>(category);
         
         if(!ModelState.IsValid)
@@ -47,10 +47,10 @@ public class CategoryController(ICategoryInterface categoryInterface, IMapper ma
     [ProducesResponseType(400)]
     public IActionResult GetPokemonByCategory(int categoryId)
     {
-        if(!categoryInterface.CategoryExists(categoryId))
+        if(!categoryRepository.CategoryExists(categoryId))
             return NotFound();
         
-        var pokemon = categoryInterface.GetPokemonByCategory(categoryId);
+        var pokemon = categoryRepository.GetPokemonByCategory(categoryId);
         var mappedPokemon = mapper.Map<List<PokemonDto>>(pokemon);
         
         if(!ModelState.IsValid)
@@ -67,7 +67,7 @@ public class CategoryController(ICategoryInterface categoryInterface, IMapper ma
         if(categoryDto == null)
             return BadRequest(ModelState);
         
-        var category = categoryInterface.GetCategories().Where(c => c.Name.Trim().ToUpper() == categoryDto.Name.Trim().ToUpper()).FirstOrDefault();
+        var category = categoryRepository.GetCategories().Where(c => c.Name.Trim().ToUpper() == categoryDto.Name.Trim().ToUpper()).FirstOrDefault();
 
         if (category != null)
         {
@@ -80,7 +80,7 @@ public class CategoryController(ICategoryInterface categoryInterface, IMapper ma
         
         var categoryEntity = mapper.Map<Category>(categoryDto); // The actual saving line
         
-        if (!categoryInterface.CreateCategory(categoryEntity))
+        if (!categoryRepository.CreateCategory(categoryEntity))
         {
             ModelState.AddModelError("error","Error while creating category");
             return StatusCode(500, ModelState);

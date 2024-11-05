@@ -5,7 +5,7 @@ using PokemonReviewApp.Model;
 
 namespace PokemonReviewApp.Repository;
 
-public class CountryRepository :ICountryInterface
+public class CountryRepository :ICountryRepository
 {
     private readonly DataContext _context;
 

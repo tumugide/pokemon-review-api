@@ -13,12 +13,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddTransient<Seed>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); // This allows the helper profile works.
-builder.Services.AddScoped<IPokemonInterface, PokemonRepository>();
-builder.Services.AddScoped<ICategoryInterface, CategoryRepository>();
-builder.Services.AddScoped<ICountryInterface, CountryRepository>();
-builder.Services.AddScoped<IOwnerInterface, OwnerRepository>();
-builder.Services.AddScoped<IReviewInterface, ReviewRepository>();
-builder.Services.AddScoped<IReviewerInterface, ReviewerRepository>();
+builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
