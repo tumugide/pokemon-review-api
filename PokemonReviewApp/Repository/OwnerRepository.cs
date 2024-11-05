@@ -4,7 +4,7 @@ using PokemonReviewApp.Model;
 
 namespace PokemonReviewApp.Repository;
 
-public class OwnerRepository :IOwnerInterface
+public class OwnerRepository : IOwnerInterface
 {
     private readonly DataContext _context;
 
@@ -12,6 +12,7 @@ public class OwnerRepository :IOwnerInterface
     {
         _context = context;
     }
+
     public ICollection<Owner> GetOwners()
     {
         return _context.Owners.ToList();
@@ -35,5 +36,16 @@ public class OwnerRepository :IOwnerInterface
     public bool OwnerExists(int ownerId)
     {
         return _context.Owners.Any(o => o.Id == ownerId);
+    }
+
+    public bool CreateOwner(Owner owner)
+    {
+        _context.Owners.Add(owner);
+        return Save();
+    }
+
+    public bool Save()
+    {
+        return (_context.SaveChanges()) > 0 ? true : false;
     }
 }
