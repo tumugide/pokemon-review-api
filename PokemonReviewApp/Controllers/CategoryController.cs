@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Dto;
+using PokemonReviewApp.Dto.CreateDto;
 using PokemonReviewApp.Interfaces;
 using PokemonReviewApp.Model;
 
@@ -13,7 +14,7 @@ namespace PokemonReviewApp.Controllers;
 public class CategoryController(ICategoryRepository categoryRepository, IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<Category>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<CategoryDto>))]
     public IActionResult getCategories()
     {
         var categories = categoryRepository.GetCategories();
@@ -26,7 +27,7 @@ public class CategoryController(ICategoryRepository categoryRepository, IMapper 
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(200, Type = typeof(Category))]
+    [ProducesResponseType(200, Type = typeof(CategoryDto))]
     [ProducesResponseType(404)]
     public IActionResult GetCategory(int id)
     {
@@ -43,7 +44,7 @@ public class CategoryController(ICategoryRepository categoryRepository, IMapper 
     }
 
     [HttpGet("{categoryId}/pokemon")]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<Pokemon>))]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<PokemonDto>))]
     [ProducesResponseType(400)]
     public IActionResult GetPokemonByCategory(int categoryId)
     {
@@ -62,7 +63,7 @@ public class CategoryController(ICategoryRepository categoryRepository, IMapper 
     [HttpPost]
     [ProducesResponseType(201)]
     [ProducesResponseType(400)]
-    public IActionResult CreateCategory([FromBody] CategoryDto categoryDto)
+    public IActionResult CreateCategory([FromBody] AddCategoryDto categoryDto)
     {
         if(categoryDto == null)
             return BadRequest(ModelState);
@@ -78,15 +79,41 @@ public class CategoryController(ICategoryRepository categoryRepository, IMapper 
         if(!ModelState.IsValid)
             return BadRequest(ModelState);
         
-        var categoryEntity = mapper.Map<Category>(categoryDto); // The actual saving line
+        var categoryMap = mapper.Map<Category>(categoryDto); // The actual saving line
         
-        if (!categoryRepository.CreateCategory(categoryEntity))
+        if (!categoryRepository.CreateCategory(categoryMap))
         {
             ModelState.AddModelError("error","Error while creating category");
             return StatusCode(500, ModelState);
         }
 
         return Ok("Category created");
+
+    }
+    
+    [HttpPut("{categoryId}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    public IActionResult UpdateCategory(int categoryId, [FromBody] AddCategoryDto updatedCategoryDto)
+    {
+        if(updatedCategoryDto == null)
+            return BadRequest(ModelState);
+        
+        if(!categoryRepository.CategoryExists(categoryId))
+            return NotFound();
+        
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
+        var categoryMap = mapper.Map<Category>(updatedCategoryDto); // The actual saving line
+        
+        if (!categoryRepository.UpdateCategory(categoryMap))
+        {
+            ModelState.AddModelError("error","Error while updating category");
+            return StatusCode(500, ModelState);
+        }
+
+        return Ok("Category updated");
 
     }
 }

@@ -13,7 +13,7 @@ public class MappingProfiles :Profile
         CreateMap<AddPokemonDto, Pokemon>();
         
         CreateMap<Category, CategoryDto>();
-        CreateMap<CategoryDto, Category>();
+        CreateMap<AddCategoryDto, Category>();
         
         CreateMap<Country, CountryDto>();
         CreateMap<CountryDto, Country>();
