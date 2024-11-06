@@ -93,4 +93,28 @@ public class ReviewerController(IReviewerRepository reviewerRepository, IMapper 
         return Ok("Reviewer created");
 
     }
+    
+    [HttpPut("{reviewerId}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    public IActionResult UpdateReviewer(int reviewerId, [FromBody] AddReviewerDto updatedReviewerDto)
+    {
+        if(updatedReviewerDto == null)
+            return BadRequest(ModelState);
+        
+        if(!reviewerRepository.ReviewerExists(reviewerId))
+            return NotFound();
+        
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
+        var reviewerMap = mapper.Map<Reviewer>(updatedReviewerDto);
+        reviewerMap.Id = reviewerId;
+        
+        if (reviewerRepository.UpdateReviewer(reviewerMap))
+            return Ok("Reviewer updated");
+        
+        ModelState.AddModelError("error","Error while updating reviewer");
+        return StatusCode(500, ModelState);
+    }
 }
