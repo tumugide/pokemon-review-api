@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PokemonReviewApp.Dto;
+using PokemonReviewApp.Dto.CreateDto;
 using PokemonReviewApp.Interfaces;
 using PokemonReviewApp.Model;
 
@@ -98,5 +99,32 @@ public class CountryController(ICountryRepository countryRepository, IMapper map
         }
         
         return Ok("Country created");
+    }
+    
+    [HttpPut("{countryId}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    public IActionResult UpdateCountry(int countryId, [FromBody] AddCountryDto updatedCountryDto)
+    {
+        if(updatedCountryDto == null)
+            return BadRequest(ModelState);
+        
+        if(!countryRepository.CountryExists(countryId))
+            return NotFound();
+        
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
+        var countryMap = mapper.Map<Country>(updatedCountryDto); // The actual saving line
+
+        countryMap.Id = countryId;
+        if (!countryRepository.UpdateCountry(countryMap))
+        {
+            ModelState.AddModelError("error","Error while updating country");
+            return StatusCode(500, ModelState);
+        }
+
+        return Ok("Country updated");
+
     }
 }

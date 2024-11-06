@@ -9,6 +9,7 @@ public interface IReviewRepository
     bool ReviewExists(int id);
     
     bool CreateReview(Review review);
+    bool UpdateReview(Review review);
     bool Save();
     ICollection<Review> GetReviewsOfAPokemon(int pokemonId);
 }

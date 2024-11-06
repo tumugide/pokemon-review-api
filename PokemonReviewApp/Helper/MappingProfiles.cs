@@ -16,10 +16,11 @@ public class MappingProfiles :Profile
         CreateMap<AddCategoryDto, Category>();
         
         CreateMap<Country, CountryDto>();
-        CreateMap<CountryDto, Country>();
+        CreateMap<AddCountryDto, Country>();
         
         CreateMap<Owner, OwnerDto>();
         CreateMap<OwnerDto, Owner>();
+        CreateMap<UpdateOwnerDto, Owner>();
         
         CreateMap<Review, ReviewDto>();
         CreateMap<AddReviewDto, Review>();

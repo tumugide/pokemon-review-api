@@ -105,15 +105,16 @@ public class CategoryController(ICategoryRepository categoryRepository, IMapper 
         if(!ModelState.IsValid)
             return BadRequest(ModelState);
         
-        var categoryMap = mapper.Map<Category>(updatedCategoryDto); // The actual saving line
+        var categoryMap = mapper.Map<Category>(updatedCategoryDto);
+        categoryMap.Id = categoryId;
         
-        if (!categoryRepository.UpdateCategory(categoryMap))
-        {
-            ModelState.AddModelError("error","Error while updating category");
-            return StatusCode(500, ModelState);
-        }
+        if (categoryRepository.UpdateCategory(categoryMap))
+            return Ok("Category updated");
+        
+        ModelState.AddModelError("error","Error while updating category");
+        return StatusCode(500, ModelState);
+        
 
-        return Ok("Category updated");
 
     }
 }

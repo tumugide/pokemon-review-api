@@ -70,6 +70,31 @@ public class PokemonRepository : IPokemonRepository
         return Save();
     }
 
+    public bool UpdatePokemon(int ownerId, int categoryId, Pokemon pokemon)
+    {
+        var pokemonOwnerEntity = _context.Owners.FirstOrDefault(o => o.Id == ownerId);
+        var category = _context.Categories.Find(categoryId);
+
+        var pokemonOwner = new PokemonOwner()
+        {
+            Owner = pokemonOwnerEntity,
+            Pokemon = pokemon
+        };
+
+        _context.Update(pokemonOwner);
+        
+        var pokemonCategory = new PokemonCategory()
+        {
+            Category = category,
+            Pokemon = pokemon
+        };
+
+        _context.Update(pokemonCategory);
+        
+        _context.Update(pokemon);
+        return Save();
+    }
+
     public bool Save()
     {
         var saved = _context.SaveChanges();

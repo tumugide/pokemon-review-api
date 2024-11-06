@@ -108,4 +108,34 @@ public class ReviewController :ControllerBase
         return Ok("Review created");
 
     }
+    
+    [HttpPut("{reviewId}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    public IActionResult UpdateReview(int reviewId, [FromBody] AddReviewDto updatedReviewDto)
+    {
+        if(updatedReviewDto == null)
+            return BadRequest(ModelState);
+        
+        if(!_reviewRepository.ReviewExists(reviewId))
+            return NotFound();
+        
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
+        var reviewMap = _mapper.Map<Review>(updatedReviewDto);
+        reviewMap.Reviewer = _reviewerRepository.GetReviewer(updatedReviewDto.ReviewerId);
+        reviewMap.Pokemon = _pokemonRepository.GetPokemon(updatedReviewDto.PokemonId);
+        
+        reviewMap.Id = reviewId;
+        
+        if (_reviewRepository.UpdateReview(reviewMap))
+            return Ok("Review updated");
+        
+        ModelState.AddModelError("error","Error while updating review");
+        return StatusCode(500, ModelState);
+        
+
+
+    }
 }

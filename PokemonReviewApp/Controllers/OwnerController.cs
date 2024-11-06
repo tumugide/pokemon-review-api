@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Dto;
+using PokemonReviewApp.Dto.CreateDto;
 using PokemonReviewApp.Interfaces;
 using PokemonReviewApp.Model;
 
@@ -107,6 +108,31 @@ public class OwnerController(IOwnerRepository ownerRepository, IMapper mapper, I
         }
         
         return Ok("Owner created");
+
+    }
+    
+    [HttpPut("{ownerId}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    public IActionResult UpdateOwner(int ownerId, [FromBody] UpdateOwnerDto updatedOwnerDto)
+    {
+        if(updatedOwnerDto == null)
+            return BadRequest(ModelState);
+        
+        if(!ownerRepository.OwnerExists(ownerId))
+            return NotFound();
+        
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
+        var ownerMap = mapper.Map<Owner>(updatedOwnerDto);
+        ownerMap.Id = ownerId;
+        
+        if (ownerRepository.UpdateOwner(ownerMap))
+            return Ok("Owner updated");
+        
+        ModelState.AddModelError("error","Error while updating owner");
+        return StatusCode(500, ModelState);
 
     }
 }

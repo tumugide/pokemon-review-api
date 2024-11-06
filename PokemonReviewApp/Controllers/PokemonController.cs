@@ -97,4 +97,29 @@ public class PokemonController : ControllerBase
 
     }
     
+    [HttpPut("{pokemonId}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    public IActionResult UpdatePokemon(int pokemonId, [FromBody] AddPokemonDto updatedPokemonDto)
+    {
+        if(updatedPokemonDto == null)
+            return BadRequest(ModelState);
+        
+        if(!_pokemonRepository.PokemonExists(pokemonId))
+            return NotFound();
+        
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
+        var pokemonMap = _mapper.Map<Pokemon>(updatedPokemonDto);
+        pokemonMap.Id = pokemonId;
+        
+        if (_pokemonRepository.UpdatePokemon(updatedPokemonDto.OwnerId,updatedPokemonDto.CategoryId,pokemonMap))
+            return Ok("Pokemon updated");
+        
+        ModelState.AddModelError("error","Error while updating pokemon");
+        return StatusCode(500, ModelState);
+
+    }
+    
 }
