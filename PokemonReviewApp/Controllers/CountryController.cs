@@ -127,4 +127,25 @@ public class CountryController(ICountryRepository countryRepository, IMapper map
         return Ok("Country updated");
 
     }
+    
+    [HttpDelete("{countryId}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    public IActionResult DeleteCountry(int countryId)
+    {
+        if(!countryRepository.CountryExists(countryId))
+            return NotFound();
+        
+        var country = countryRepository.GetCountry(countryId);
+        
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
+        if(countryRepository.DeleteCountry(country))
+            return Ok("country deleted");
+        
+        ModelState.AddModelError("error","Error while updating country");
+        return StatusCode(500, ModelState);
+    }
 }

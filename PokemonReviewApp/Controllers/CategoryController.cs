@@ -113,8 +113,27 @@ public class CategoryController(ICategoryRepository categoryRepository, IMapper 
         
         ModelState.AddModelError("error","Error while updating category");
         return StatusCode(500, ModelState);
+
+    }
+
+    [HttpDelete("{categoryId}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    public IActionResult DeleteCategory(int categoryId)
+    {
+        if(!categoryRepository.CategoryExists(categoryId))
+            return NotFound();
         
-
-
+        var category = categoryRepository.GetCategory(categoryId);
+        
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
+        if(categoryRepository.DeleteCategory(category))
+            return Ok("Category deleted");
+        
+        ModelState.AddModelError("error","Error while updating category");
+        return StatusCode(500, ModelState);
     }
 }

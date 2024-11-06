@@ -117,4 +117,25 @@ public class ReviewerController(IReviewerRepository reviewerRepository, IMapper 
         ModelState.AddModelError("error","Error while updating reviewer");
         return StatusCode(500, ModelState);
     }
+    
+    [HttpDelete("{reviewerId}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    public IActionResult DeleteReviewer(int reviewerId)
+    {
+        if(!reviewerRepository.ReviewerExists(reviewerId))
+            return NotFound();
+        
+        var reviewer = reviewerRepository.GetReviewer(reviewerId);
+        
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
+        if(reviewerRepository.DeleteReviewer(reviewer))
+            return Ok("reviewer deleted");
+        
+        ModelState.AddModelError("error","Error while updating reviewer");
+        return StatusCode(500, ModelState);
+    }
 }

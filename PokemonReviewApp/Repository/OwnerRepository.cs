@@ -50,6 +50,12 @@ public class OwnerRepository : IOwnerRepository
         return Save();
     }
 
+    public bool DeleteOwner(Owner owner)
+    {
+        _context.Remove(owner);
+        return Save();
+    }
+
     public bool Save()
     {
         return (_context.SaveChanges()) > 0 ? true : false;

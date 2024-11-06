@@ -133,6 +133,26 @@ public class OwnerController(IOwnerRepository ownerRepository, IMapper mapper, I
         
         ModelState.AddModelError("error","Error while updating owner");
         return StatusCode(500, ModelState);
-
+    }
+    
+    [HttpDelete("{ownerId}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    public IActionResult DeleteOwner(int ownerId)
+    {
+        if(!ownerRepository.OwnerExists(ownerId))
+            return NotFound();
+        
+        var owner = ownerRepository.GetOwner(ownerId);
+        
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
+        if(ownerRepository.DeleteOwner(owner))
+            return Ok("owner deleted");
+        
+        ModelState.AddModelError("error","Error while updating owner");
+        return StatusCode(500, ModelState);
     }
 }

@@ -95,6 +95,22 @@ public class PokemonRepository : IPokemonRepository
         return Save();
     }
 
+    public bool DeletePokemon(Pokemon pokemon)
+    {
+        var pokemonCategory = _context.PokemonCategories.Where(c => c.Pokemon == pokemon).First();
+        _context.Remove(pokemonCategory);
+        
+        var pokemonOwner = _context.PokemonOwners.Where(p => p.Pokemon == pokemon).First();
+        _context.Remove(pokemonOwner);
+        
+        var pokemonReviews = _context.Reviews.Where(p => p.Pokemon == pokemon).ToList();
+        _context.RemoveRange(pokemonReviews);
+        
+        _context.Remove(pokemon);
+        
+        return Save();
+    }
+
     public bool Save()
     {
         var saved = _context.SaveChanges();
